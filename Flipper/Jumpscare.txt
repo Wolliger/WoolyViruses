@@ -1,0 +1,9 @@
+REM IOS JUMPSCARE
+
+DELAY 5000
+GUI h
+GUI SPACE
+DELAY 250
+STRING https://www.youtube.com/watch?v=H47ShWGGpxc
+DELAY 20
+ENTER
