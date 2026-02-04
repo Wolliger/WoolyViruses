@@ -46,5 +46,5 @@ foreach ($ssid in $profiles) {
         Write-Host "Fehler beim Senden für SSID '$ssid': $($_.Exception.Message)" -ForegroundColor Red
     }
 }
+exit
 
-Write-Host "Fertig. WLAN-Infos wurden (soweit vorhanden) an den Webhook gesendet." -ForegroundColor Green
